@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "Portable Linux Executable Directory v1.0 by Alex Free"
+echo -e "Portable Linux Executable Directory v1.0.1\nBy Alex Free\n"
 
 if [ "$#" -eq 1 ]; then
 	binary_full_path=$(command -v "$1")
 else
-  echo -e "PLED only accepts 1 argument\nUsage:\npled <executable filename>\npled <executable in path"
+  echo -e "PLED only accepts 1 argument\nUsage:\npled <executable filename/shell path>"
   exit 1
 fi
 
@@ -29,7 +29,6 @@ if [ -f "$binary_full_path" ]; then
 		echo "Validated "$binary_full_path" as an executable"
 	elif file --mime-type "$binary"2 | grep 'shellscript' > /dev/null 2>&1; then
       read -p "Error: "$binary_full_path" is NOT actually an executable file. It is a shell script that executes the real executable, which is somewhere else. Do you want to view the shell script "$binary_full_path"? (Y/n): " -n 1 -r
-		
 		if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
 			echo
       	cat "$binary_full_path"
@@ -50,10 +49,9 @@ if [ -f "$binary_full_path" ]; then
 	total_copied=$(echo "${all_linked_libs}" | wc -l)
 	libs_count=$(expr $total_copied - 1)
 	echo "Copied "$libs_count" shared libraries"
-	echo -e "#!/bin/bash\ncd "'"${BASH_SOURCE%/*}"'"\n./"$loader_name" --library-path . ./\""$binary"\"2 "'"$@"'"" > "$binary" 
-	echo -e "#!/bin/bash\ncd "'"${BASH_SOURCE%/*}"'"\nenv LD_TRACE_LOADED_OBJECTS=1 ./"$loader_name" --library-path . ./\""$binary"\"2 '"$@"'" > "$binary"-ldd 
-	chmod 777 "$binary"
-	chmod 777 "$binary"-ldd
+	echo -e "#!/bin/bash\n"'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$binary"\"2 "'"$@"'"" > "$binary" 
+	echo -e "#!/bin/bash\nenv LD_TRACE_LOADED_OBJECTS=1 "'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$binary"\"2 '"$@"'" > "$binary"-ldd 
+	chmod 775 *
 else
   echo "Error: Can not find the file: "$1""
   exit 1
