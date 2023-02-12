@@ -1,25 +1,25 @@
-PLED 
+# [alex-free.github.io](https://alex-free.github.io)
 
-[alex-free.github.io](https://alex-free.github.io)
-==================================================
-
-PortableLinuxExecutableDirectory (a.k.a. PLED)
-==============================================
+## Portable Linux Executable Directory
 
 By Alex Free
 
-PLED brings 'Windows-like software portability' to Linux. On Windows it is common for software to be distributed in this way:
+Release dynamically linked Linux executables with 'Windows-like software portability'. On Windows it is common for software to be distributed as an executable in it's own folder, which also contains any dynamically linked libraries. This ensures it can 'run anywhere`. You can do this on Windows because the library linker searches the directory that the executable file is in for the dynamic libraries it needs to run (which Linux does not do). This behavior is very desirable an OS such as Linux. Packaging software for Linux can become a nightmare quickly when dynamic libraries are involved. 
 
-*   The executable file (`.exe`) of the actual program is in a directory.
-*   All dynamic library files (`.dll`'s) needed to run the executable file are also found in the same directory as the executable.
-*   The Windows linker searches the directory that the executable file is in for the dynamic libraries it needs to run, finds them in the directory, and the executable loads with them.
+PLED is designed to make releasing Linux software easy and accessible by bringing the same Windows behavior and ideas to Linux. The PLED version of a Linux executable should run on any Linux distribution if the CPU architecture is the same (and it's not an extreme version difference in kernel version). This is because the PLED version is a directory containing all dynamically linked shared libraries, the LD loader itself used by the OS to load said dynamically linked libraries, and a wrapper which executes the real original Linux executable using the included LD loader and self-contained shared libraries all in the same directory.
 
-This behavior is very desirable an OS such as Linux. Packaging software for Linux can become a nightmare quickly if dynamic libraries are involved (which they almost always are unless your executable is truely statically linked). PLED is designed to make releasing Linux software easy and accessable by bringing the same Windows behavior/ideals to Linux. The PLED version of a Linux executable should run on any Linux distribution with the same architecture because it is a directory containing all linked shared libraries, the LD loader itself used by the OS to load the dynamic libraries, and a wrapper which executes the real original Linux executable using the included LD loader and self-contained shared libraries all in the same directory.
+Now, there are already many different ways to achieve a 'standalone' Linux release, such as by using [Docker](https://www.docker.com/), [AppImage](https://appimage.org/), and [Snap](https://snapcraft.io/). Why use PLED over these?
 
-[Homepage](https://alex-free.github.io/pled) | [GitHub](https://github.com/alex-free/pled)
+*   PLED is as simple as it gets, no VMs, no sandbox, no weird access to the rest of the system. The only point of PLED is to bring Windows-like executable portability to Linux, no more, no less.
+*   PLED doesn't need a whole package manager and or existing system infrastructure to work. You don't need to 'install' pled to your system, it's portable in it's own right. Any system that can run Bash scripts should be enough.
+*   PLED is released into the [Public Domain](#license), do whatever you want with it. It's encouraged.
 
-Table Of Contents
------------------
+## External Links
+
+*   [Homepage](https://alex-free.github.io/pled) 
+*   [GitHub](https://github.com/alex-free/pled)
+
+## Table Of Contents
 
 *   [Downloads](#downloads)
 *   [Usage](#usage)
@@ -27,8 +27,7 @@ Table Of Contents
 
 ![pled ffplay](pled.png)
 
-Downloads
----------
+## Downloads
 
 ### v1.0.1 (9/27/2022)
 
@@ -42,16 +41,15 @@ Changes:
 
 [PLED v1.0](https://github.com/alex-free/pled/releases/download/v1.0/pled-1.0.zip)
 
-Usage
------
+## Usage
 
-PLED accepts only one argument. This can be an absolute file path to an executable, or simply the name of the executable **if it is in your `$PATH`**. Examples:
+PLED expects 1 argument. This can be either absolute file path to an executable, or the name of the executable **if it is in your `$PATH`**. For example, the below 2 commands:
 
-    ./pled git
+`./pled git`
 
-    ./pled /usr/bin/git
+`./pled /usr/bin/git`
 
-Both examples above achive the same thing, a `git-pled` directory created in the same directory that you executed PLED inside of. You can copy this directory to any file path location on your system, or even on an different Linux installation or distribution entirely and the `git` inside the `git-pled` directory will work as it is now portable, not depending on any external dependencies from the system to be installed. The `git-pled` directory contains 3 things:
+May be used to achieve the exact same end result, which is  a `git-pled` directory created in the same directory that you executed PLED from. You can copy this directory to any file path location on your system, or even on an different Linux installation or distribution entirely and the `git` inside the `git-pled` directory will work as it is now portable, not depending on any external dependencies from the system to be installed. The `git-pled` directory contains 3 things:
 
 *   The `git` executable itself, however it is renamed to `git2` in the `git-pled` directory.
 *   The `git` wrapper generated by PLED which executes `git2` with the ld loader and shared libraries in the `git-pled` directory.
@@ -61,7 +59,6 @@ It is important to note that PLED **requires an actual executable file as the fi
 
 One way you can debug a program in regards to required external files is by using [Strace](https://strace.io/) (the Linux syscall tracer). In the `*-pled` directory you can compare the output of `strace ./yourbinary` and `strace ./yourbinary2` (the actual executable the wrapper executes).
 
-License
--------
+## License
 
 PLED is released into the public domain, see the file `unlicense.txt` for more info.

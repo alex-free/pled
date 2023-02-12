@@ -1,70 +1,205 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>PLED</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-<body style="background-color:black; color:white;" link="#58D3F7" alink="#FF00FF" vlink="#58D3F7">
-
-<h1><a href=https://alex-free.github.io>alex-free.github.io</a></h1>
-
-<h1>PortableLinuxExecutableDirectory (a.k.a. PLED)</h1>
-
-<p>By Alex Free</a>
-
-<p>PLED brings 'Windows-like software portability' to Linux. On Windows it is common for software to be distributed in this way:</p>
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>PLED</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #FFFFFF;
+      background-color: #000000;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #58D3F7;
+    }
+    a:visited {
+      color: #58D3F7;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      border: 2px double blue;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border: 2px double blue;
+    }
+    th {
+      border: 2px double blue;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+        border: 2px double blue;
+        padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">PLED</h1>
+</header>
+<h1 id="alex-free.github.io"><a href="https://alex-free.github.io">alex-free.github.io</a></h1>
+<h2 id="portable-linux-executable-directory">Portable Linux Executable Directory</h2>
+<p>By Alex Free</p>
+<p>Release dynamically linked Linux executables with ‘Windows-like software portability’. On Windows it is common for software to be distributed as an executable in it’s own folder, which also contains any dynamically linked libraries. This ensures it can ’run anywhere`. You can do this on Windows because the library linker searches the directory that the executable file is in for the dynamic libraries it needs to run (which Linux does not do). This behavior is very desirable an OS such as Linux. Packaging software for Linux can become a nightmare quickly when dynamic libraries are involved.</p>
+<p>PLED is designed to make releasing Linux software easy and accessible by bringing the same Windows behavior and ideas to Linux. The PLED version of a Linux executable should run on any Linux distribution if the CPU architecture is the same (and it’s not an extreme version difference in kernel version). This is because the PLED version is a directory containing all dynamically linked shared libraries, the LD loader itself used by the OS to load said dynamically linked libraries, and a wrapper which executes the real original Linux executable using the included LD loader and self-contained shared libraries all in the same directory.</p>
+<p>Now, there are already many different ways to achieve a ‘standalone’ Linux release, such as by using <a href="https://www.docker.com/">Docker</a>, <a href="https://appimage.org/">AppImage</a>, and <a href="https://snapcraft.io/">Snap</a>. Why use PLED over these?</p>
 <ul>
-    <li>The executable file (<code>.exe</code>) of the actual program is in a directory.</li>
-    <li>All dynamic library files (<code>.dll</code>'s) needed to run the executable file are also found in the same directory as the executable.</li>
-    <li>The Windows linker searches the directory that the executable file is in for the dynamic libraries it needs to run, finds them in the directory, and the executable loads with them.</li>
+<li>PLED is as simple as it gets, no VMs, no sandbox, no weird access to the rest of the system. The only point of PLED is to bring Windows-like executable portability to Linux, no more, no less.</li>
+<li>PLED doesn’t need a whole package manager and or existing system infrastructure to work. You don’t need to ‘install’ pled to your system, it’s portable in it’s own right. Any system that can run Bash scripts should be enough.</li>
+<li>PLED is released into the <a href="#license">Public Domain</a>, do whatever you want with it. It’s encouraged.</li>
 </ul>
-
-<p>This behavior is very desirable an OS such as Linux. Packaging software for Linux can become a nightmare quickly if dynamic libraries are involved (which they almost always are unless your executable is truely statically linked). PLED is designed to make releasing Linux software easy and accessable by bringing the same Windows behavior/ideals to Linux. The PLED version of a Linux executable should run on any Linux distribution with the same architecture because it is a directory containing all linked shared libraries, the LD loader itself used by the OS to load the dynamic libraries, and a wrapper which executes the real original Linux executable using the included LD loader and self-contained shared libraries all in the same directory.</p>
-
-<a href=https://alex-free.github.io/pled>Homepage</a> | <a href=https://github.com/alex-free/pled>GitHub</a>
-<h2>Table Of Contents</h2>
-<ul><li><a href="#downloads">Downloads</a></li>
+<h2 id="external-links">External Links</h2>
+<ul>
+<li><a href="https://alex-free.github.io/pled">Homepage</a></li>
+<li><a href="https://github.com/alex-free/pled">GitHub</a></li>
+</ul>
+<h2 id="table-of-contents">Table Of Contents</h2>
+<ul>
+<li><a href="#downloads">Downloads</a></li>
 <li><a href="#usage">Usage</a></li>
-<li><a href="#license">License</a></li></ul>
-
-<img src="pled.png" alt="pled ffplay" width="400">
-
-<a name="downloads"><h2>Downloads</h2></a>
-
-<h3>v1.0.1 (9/27/2022)</h3>
-
-<p><a href=https://github.com/alex-free/pled/releases/download/v1.0.1/pled-1.0.1.zip>PLED v1.0.1</a></p>
-
-<p>Changes:</p>
-
-<ul>
-    <li>Calls LD loader by explicit filepath instead of first changing to the current directory of the PLED executable and then using a relative path. This improves software compatibility and fixes 'file not found' type issues PLED v1.0 had when giving a relative path as an argument to a PLED wrapper.</li>
+<li><a href="#license">License</a></li>
 </ul>
-
-<h3>v1.0 (1/25/2022)</h3>
-
-<p><a href=https://github.com/alex-free/pled/releases/download/v1.0/pled-1.0.zip>PLED v1.0</a></p>
-
-<a name="usage"><h2>Usage</h2></a>
-
-<p>PLED accepts only one argument. This can be an absolute file path to an executable, or simply the name of the executable <b>if it is in your <code>$PATH</code></b>. Examples:</p>
-
-<pre><code>./pled git</code></pre><pre><code>./pled /usr/bin/git</code></pre>
-
-<p>Both examples above achive the same thing, a <code>git-pled</code> directory created in the same directory that you executed PLED inside of. You can copy this directory to any file path location on your system, or even on an different Linux installation or distribution entirely and the <code>git</code> inside the <code>git-pled</code> directory will work as it is now portable, not depending on any external dependencies from the system to be installed. The <code>git-pled</code> directory contains 3 things:</p>
-
-<ul><li>The <code>git</code> executable itself, however it is renamed to <code>git2</code> in the <code>git-pled</code> directory.</li>
+<figure>
+<img src="pled.png" alt="pled ffplay" /><figcaption aria-hidden="true">pled ffplay</figcaption>
+</figure>
+<h2 id="downloads">Downloads</h2>
+<h3 id="v1.0.1-9272022">v1.0.1 (9/27/2022)</h3>
+<p><a href="https://github.com/alex-free/pled/releases/download/v1.0.1/pled-1.0.1.zip">PLED v1.0.1</a></p>
+<p>Changes:</p>
+<ul>
+<li>Calls LD loader by explicit filepath instead of first changing to the current directory of the PLED executable and then using a relative path. This improves software compatibility and fixes ‘file not found’ type issues PLED v1.0 had when giving a relative path as an argument to a PLED wrapper.</li>
+</ul>
+<h3 id="v1.0-1252022">v1.0 (1/25/2022)</h3>
+<p><a href="https://github.com/alex-free/pled/releases/download/v1.0/pled-1.0.zip">PLED v1.0</a></p>
+<h2 id="usage">Usage</h2>
+<p>PLED expects 1 argument. This can be either absolute file path to an executable, or the name of the executable <strong>if it is in your <code>$PATH</code></strong>. For example, the below 2 commands:</p>
+<p><code>./pled git</code></p>
+<p><code>./pled /usr/bin/git</code></p>
+<p>May be used to achieve the exact same end result, which is a <code>git-pled</code> directory created in the same directory that you executed PLED from. You can copy this directory to any file path location on your system, or even on an different Linux installation or distribution entirely and the <code>git</code> inside the <code>git-pled</code> directory will work as it is now portable, not depending on any external dependencies from the system to be installed. The <code>git-pled</code> directory contains 3 things:</p>
+<ul>
+<li>The <code>git</code> executable itself, however it is renamed to <code>git2</code> in the <code>git-pled</code> directory.</li>
 <li>The <code>git</code> wrapper generated by PLED which executes <code>git2</code> with the ld loader and shared libraries in the <code>git-pled</code> directory.</li>
 <li>The <code>git-ldd</code> script, which correctly displays the shared library linkage of the <code>git</code> PLED wrapper.</li>
 </ul>
-
-<p>It is important to note that PLED <b>requires an actual executable file as the first argument and NOT a shell-script wrapper</b>. Some software installed by your package manager may actually be a shell script wrapper, but be presented as the executable. PLED will refuse to function on such a shell script wrapper, as it verifies if the first argument is an actual executable file. If PLED finds this not to be the case, it will helpfully offer to display the shell script wrapper's contents to help you figure out where the real executable is. This is a good start, but typically it may be easier to just recompile the target software entirely yourself, figure out the configuration and any required external files, and then go from there. Another important thing to keep in mind is that PLED doesn't know about any external configuration or data files the executable may need to run. Also, some executables may load dynamic libraries at run time <b>without explicitly linking them</b>, like how <a href=https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1017964>Firefox</a> does by reading the external file dependentlibs.list.</p>
-
-<p>One way you can debug a program in regards to required external files is by using <a href=https://strace.io/>Strace</a> (the Linux syscall tracer). In the <code>*-pled</code> directory you can compare the output of <code>strace ./yourbinary</code> and <code>strace ./yourbinary2</code> (the actual executable the wrapper executes).</p>
-
-<a name="license"><h2>License</h2></a>
-
+<p>It is important to note that PLED <strong>requires an actual executable file as the first argument and NOT a shell-script wrapper</strong>. Some software installed by your package manager may actually be a shell script wrapper, but be presented as the executable. PLED will refuse to function on such a shell script wrapper, as it verifies if the first argument is an actual executable file. If PLED finds this not to be the case, it will helpfully offer to display the shell script wrapper’s contents to help you figure out where the real executable is. This is a good start, but typically it may be easier to just recompile the target software entirely yourself, figure out the configuration and any required external files, and then go from there. Another important thing to keep in mind is that PLED doesn’t know about any external configuration or data files the executable may need to run. Also, some executables may load dynamic libraries at run time <strong>without explicitly linking them</strong>, like how <a href="https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1017964">Firefox</a> does by reading the external file dependentlibs.list.</p>
+<p>One way you can debug a program in regards to required external files is by using <a href="https://strace.io/">Strace</a> (the Linux syscall tracer). In the <code>*-pled</code> directory you can compare the output of <code>strace ./yourbinary</code> and <code>strace ./yourbinary2</code> (the actual executable the wrapper executes).</p>
+<h2 id="license">License</h2>
 <p>PLED is released into the public domain, see the file <code>unlicense.txt</code> for more info.</p>
-
+</body>
 </html>
