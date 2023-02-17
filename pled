@@ -1,30 +1,30 @@
 #!/bin/bash
 
-echo -e "Portable Linux Executable Directory v1.0.1\nBy Alex Free\n"
+echo -e "Portable Linux Executable Directory v1.0.2\nBy Alex Free\n"
 
-if [ "$#" -eq 1 ]; then
-	binary_full_path=$(command -v "$1")
-else
-  echo -e "PLED only accepts 1 argument\nUsage:\npled <executable filename/shell path>"
+if [ "$#" != 2 ]; then
+  echo -e "Usage:\npled <command or full executable file path> <output directory>"
   exit 1
 fi
+
+binary_full_path=$(command -v "$1")
 
 if [ -f "$binary_full_path" ]; then
 
 	binary=$(basename "$1")
-	if [ -d "$binary"-pled ]; then
-		read -p "The directory "$binary"-pled already exists, is it ok to overwrite it? (Y/n): " -n 1 -r
+	if [ -e "$2" ]; then
+		read -p "The directory "$2" already exists, is it ok to delete and create a new directory of this name ? (Y/n): " -n 1 -r
 			if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
-				rm -r "$binary"-pled
+				rm -r "$2"
 				echo
       	else
    			echo -e "\nPLED has aborted"
 				exit 0   		
    		fi   	
 	fi
-	mkdir "$binary"-pled
-	cp "$binary_full_path" "$binary"-pled/"$binary"2
-	cd "$binary"-pled
+	mkdir "$2"
+	cp "$binary_full_path" "$2"/"$binary"2
+	cd "$2"
 	if file --mime-type "$binary"2 | grep 'executable' > /dev/null 2>&1; then
 		echo "Validated "$binary_full_path" as an executable"
 	elif file --mime-type "$binary"2 | grep 'shellscript' > /dev/null 2>&1; then
@@ -33,7 +33,7 @@ if [ -f "$binary_full_path" ]; then
 			echo
       	cat "$binary_full_path"
       fi
-      rm -rf "$binary"-pled
+      rm -rf "$2"
       exit 0
    else
    	echo "Error: "$binary_full_path" is not an executable."
@@ -53,6 +53,6 @@ if [ -f "$binary_full_path" ]; then
 	echo -e "#!/bin/bash\nenv LD_TRACE_LOADED_OBJECTS=1 "'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$binary"\"2 '"$@"'" > "$binary"-ldd 
 	chmod 775 *
 else
-  echo "Error: Can not find the file: "$1""
+  echo "Error: Can not find the executable file: "$1""
   exit 1
 fi
