@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+version="1.0.3"
+package=pled-v"$version"
+
+cd "$(dirname "$0")"
+rm -rf \
+"$package" \
+"$package".zip
+
+if [ "$1" == "-c" ]; then
+    exit 0
+fi
+
+mkdir $package
+cp -r \
+pled \
+readme.md \
+images \
+unlicense.txt \
+"$package"
+
+chmod -R 777 "$package"
+zip -r "$package".zip "$package"

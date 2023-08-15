@@ -8,12 +8,6 @@ Release dynamically linked Linux executables with 'Windows-like software portabi
 
 PLED is designed to make releasing Linux software easy and accessible by bringing the same Windows behavior and ideas to Linux. The PLED version of a Linux executable should run on any Linux distribution if the CPU architecture is the same (and it's not an extreme version difference in kernel version). This is because the PLED version is a directory containing all dynamically linked shared libraries, the LD loader itself used by the OS to load said dynamically linked libraries, and a wrapper which executes the real original Linux executable using the included LD loader and self-contained shared libraries all in the same directory.
 
-Now, there are already many different ways to achieve a 'standalone' Linux release, such as by using [Docker](https://www.docker.com/), [AppImage](https://appimage.org/), and [Snap](https://snapcraft.io/). Why use PLED over these?
-
-*   PLED is as simple as it gets, no VMs, no sandbox, no weird access to the rest of the system. The only point of PLED is to bring Windows-like executable portability to Linux, no more, no less.
-*   PLED doesn't need a whole package manager and or existing system infrastructure to work. You don't need to 'install' pled to your system, it's portable in it's own right. Any system that can run Bash scripts should be enough.
-*   PLED is released into the [Public Domain](#license), do whatever you want with it. It's encouraged.
-
 ## External Links
 
 *   [Homepage](https://alex-free.github.io/pled) 
@@ -23,29 +17,26 @@ Now, there are already many different ways to achieve a 'standalone' Linux relea
 
 *   [Downloads](#downloads)
 *   [Usage](#usage)
+*   [The PLED Advantage](#the-pled-advantage)
+*   [Requirements For Portability](#requirements-for-portability)
+*   [PLED In The Wild](#pled-in-the-wild)
+
 *   [License](#license)
+
 
 ## Downloads
 
-### v1.0.2 (2/16/2023)
+### v1.0.3 (8/15/2023)
 
-[PLED v1.0.2](https://github.com/alex-free/pled/releases/download/v1.0.2/pled-1.0.2.zip)
-
-Changes:
-
-*   PLED now requires 2 arguments. The first is the full executable file path or the name of a command in your `$PATH`. The second is the full path to the output `pled`.
-
-### v1.0.1 (9/27/2022)
-
-[PLED v1.0.1](https://github.com/alex-free/pled/releases/download/v1.0.1/pled-1.0.1.zip)
+[PLED v1.0.3](https://github.com/alex-free/pled/releases/download/v1.0.3/pled-v1.0.3.zip)
 
 Changes:
 
-*   Calls LD loader by explicit filepath instead of first changing to the current directory of the PLED executable and then using a relative path. This improves software compatibility and fixes 'file not found' type issues PLED v1.0 had when giving a relative path as an argument to a PLED wrapper.
+*   Improved error handling.
+*   You can now use an existing directory as the specified output directory. This way you can dump a whole bunch of programs that have be ran through pled all in one place, such as in a shared 'bin' directory within a portable release of some software toolkit.
+*   Improved documentation.
 
-### v1.0 (1/25/2022)
-
-[PLED v1.0](https://github.com/alex-free/pled/releases/download/v1.0/pled-1.0.zip)
+[About previous versions](changelog.md)
 
 ## Usage
 
@@ -65,10 +56,41 @@ May be used to achieve the exact same end result, which is  a `git-2.39-pled` di
 
 ![pled example 2](images/ffplay-2.png)
 
+## The PLED Advantage
 
-It is important to note that PLED **requires an actual executable file as the first argument and NOT a shell-script wrapper**. Some software installed by your package manager may actually be a shell script wrapper, but be presented as the executable. PLED will refuse to function on such a shell script wrapper, as it verifies if the first argument is an actual executable file. If PLED finds this not to be the case, it will helpfully offer to display the shell script wrapper's contents to help you figure out where the real executable is. This is a good start, but typically it may be easier to just recompile the target software entirely yourself, figure out the configuration and any required external files, and then go from there. Another important thing to keep in mind is that PLED doesn't know about any external configuration or data files the executable may need to run. Also, some executables may load dynamic libraries at run time **without explicitly linking them**, like how [Firefox](https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1017964) does by reading the external file dependentlibs.list.
+There are many different ways to release portable Linux software, such as by using [Docker](https://www.docker.com/), [AppImage](https://appimage.org/), or [Snap](https://snapcraft.io/). Why use PLED over these?
 
-One way you can debug a program in regards to required external files is by using [Strace](https://strace.io/) (the Linux syscall tracer). In the output `pled` directory you can compare the output of `strace ./yourbinary` and `strace ./yourbinary2` (the actual executable the wrapper executes).
+*   PLED is as simple as it gets. There is no VM or sandbox involved.
+
+*   PLED doesn't need a package manager, or any other existing system infrastructure to work. There is nothing you need to 'install' to use 'pled' binaries on a Linux system. It's just bash scripts.
+
+## Requirements For Portability
+
+### Real Dynamically Linked Executable File
+
+PLED **requires an actual executable file as the first argument and NOT a shell-script wrapper**. Some software installed by your package manager may actually be a shell script wrapper, but be presented as the executable. PLED will refuse to function on such a shell script wrapper, as it verifies if the first argument is an actual executable file. If PLED finds this not to be the case, it will helpfully offer to display the shell script wrapper's contents to help you figure out where the real executable is. This is a good start, but typically it may be easier to just recompile the target software entirely yourself, figure out the configuration and any required external files, and then go from there. 
+
+### External Resource Files
+
+Many executables may expect explicit filepaths to things like config files, databases, etc. PLED has no way of knowing about any such files that the executable may need to run correctly and as intended. When making a program portable with PLED, it is important to figure out how to set the program to use portable, self-contained resource files such as these. Compiling a program from scratch is sometimes the easiest way to accomplish this.
+
+### Executables Which Load Dynamic Libraries Themselves
+
+Some executables may themselves load dynamic libraries that are not linked explicitly be instead using executable code. This is different then what normally happens, which is the ld loader loads all the linked libraries using info derived from executable itself (which is how PLED finds dynamic libraries). 
+
+One such example is the [Firefox](https://bugs.launchpad.net/ubuntu/+source/firefox/+bug/1017964) executables found in most package managers. The Firefox executable loads a bunch of dynamic libraries named in an [external resource file](#external-resource-files) (`dependentlibs.list`) in the executable code itself. This prevents PLED from making such an executable portable as all dynamic libraries can not be accounted for automatically.
+
+### Debugging PLED Executables
+
+One way you can debug a program in regards [external resource files](#external-resource-files) or [loading dynamic libraries using executable code](#executables-which-load-dynamic-libraries-themselves) is by using [Strace](https://strace.io/) (the Linux syscall tracer). In the output `pled` directory you can compare the output of `strace ./yourbinary` and `strace ./yourbinary2` (the actual executable the wrapper executes).
+
+## PLED In The Wild
+
+I have used PLED myself in my other projects to make portable linux builds a reality, such as:
+
+*   [Video2DreamcastDisc](https://alex-free.github.io/video2dreamcastdisc)
+*   [Dreamcast CDI Burner](https://alex-free.github.io/dcdib)
+*   [CDRDAO-PLED](https://alex-free.github.io/cdrdao)
 
 ## License
 

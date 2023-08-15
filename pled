@@ -1,58 +1,60 @@
 #!/bin/bash
 
-echo -e "Portable Linux Executable Directory v1.0.2\nBy Alex Free\n"
+echo -e "Portable Linux Executable Directory (PLED) v1.0.3\nBy Alex Free\n"
 
 if [ "$#" != 2 ]; then
-  echo -e "Usage:\npled <command or full executable file path> <output directory>"
-  exit 1
+	echo -e "Usage:\npled <command or executable file> <output directory>"
+	exit 1
 fi
 
-binary_full_path=$(command -v "$1")
+executable_full_path=$(command -v "$1")
 
-if [ -f "$binary_full_path" ]; then
+if [ -f "$executable_full_path" ]; then
+	executable=$(basename "$1")
 
-	binary=$(basename "$1")
-	if [ -e "$2" ]; then
-		read -p "The directory "$2" already exists, is it ok to delete and create a new directory of this name ? (Y/n): " -n 1 -r
-			if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
-				rm -r "$2"
-				echo
-      	else
-   			echo -e "\nPLED has aborted"
-				exit 0   		
-   		fi   	
-	fi
-	mkdir "$2"
-	cp "$binary_full_path" "$2"/"$binary"2
-	cd "$2"
-	if file --mime-type "$binary"2 | grep 'executable' > /dev/null 2>&1; then
-		echo "Validated "$binary_full_path" as an executable"
-	elif file --mime-type "$binary"2 | grep 'shellscript' > /dev/null 2>&1; then
-      read -p "Error: "$binary_full_path" is NOT actually an executable file. It is a shell script that executes the real executable, which is somewhere else. Do you want to view the shell script "$binary_full_path"? (Y/n): " -n 1 -r
+	if file --mime-type "$executable_full_path" | grep 'executable' > /dev/null 2>&1; then
+		echo "Validated "$executable_full_path" as an executable"
+	elif file --mime-type "$executable_full_path" | grep 'shellscript' > /dev/null 2>&1; then
+    	read -p "Error: "$executable_full_path" is NOT actually an executable file. It is a shell script that executes the real executable, which is somewhere else. Do you want to view the shell script "$executable_full_path"? (Y/n): " -n 1 -r
+		
 		if [ $REPLY = "y" ] || [ $REPLY = "Y" ]; then
 			echo
-      	cat "$binary_full_path"
-      fi
-      rm -rf "$2"
-      exit 0
+      		cat "$executable_full_path"
+      	fi
+      	
+      	exit 0
    else
-   	echo "Error: "$binary_full_path" is not an executable."
+   		echo "Error: "$executable_full_path" is not an executable."
+		exit 1
 	fi
 
-	all_linked_libs=$(ldd ./"$binary"2 | grep -Po '/.*(?= \(0x)')
+	if [ -e "$2" ]; then
+		echo "Info: "$2" is an existing directory"
+	else
+		mkdir "$2"
+	fi
+
+	set -e 
+
+	cp -u "$executable_full_path" "$2"/"$executable"2
+	cd "$2"
+
+	all_linked_libs=$(ldd ./"$executable"2 | grep -Po '/.*(?= \(0x)')
 	loader=$(echo "$all_linked_libs" | grep ld-linux*)
 	loader_name=$(basename "$loader")
  	echo "Got LD loader: "$loader_name""
+	
 	while IFS= read -r line; do
-	   cp -L "$line" .
+	   cp -u -L "$line" .
 	done <<< "${all_linked_libs}"
+
 	total_copied=$(echo "${all_linked_libs}" | wc -l)
 	libs_count=$(expr $total_copied - 1)
 	echo "Copied "$libs_count" shared libraries"
-	echo -e "#!/bin/bash\n"'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$binary"\"2 "'"$@"'"" > "$binary" 
-	echo -e "#!/bin/bash\nenv LD_TRACE_LOADED_OBJECTS=1 "'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$binary"\"2 '"$@"'" > "$binary"-ldd 
-	chmod 775 *
+	echo -e "#!/bin/bash\n"'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$executable"\"2 "'"$@"'"" > "$executable" 
+	echo -e "#!/bin/bash\nenv LD_TRACE_LOADED_OBJECTS=1 "'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$executable"\"2 '"$@"'" > "$executable"-ldd 
+	chmod -R 777 *
 else
-  echo "Error: Can not find the executable file: "$1""
-  exit 1
+	echo "Error: "$1" not found as a filepath or a command in your "\"\$PATH"\""
+	exit 1
 fi
