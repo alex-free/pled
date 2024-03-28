@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.3 (8/15/2023)
+
+[PLED v1.0.3](https://github.com/alex-free/pled/releases/download/v1.0.3/pled-v1.0.3.zip)
+
+Changes:
+
+*   Improved error handling.
+*   You can now use an existing directory as the specified output directory. This way you can dump a whole bunch of programs that have be ran through pled all in one place, such as in a shared 'bin' directory within a portable release of some software toolkit.
+*   Improved documentation.
+
 ## v1.0.2 (2/16/2023)
 
 [PLED v1.0.2](https://github.com/alex-free/pled/releases/download/v1.0.2/pled-1.0.2.zip)

@@ -1,25 +1,18 @@
 #!/bin/bash
 
 set -e
-version="1.0.3"
-package=pled-v"$version"
+version="v1.0.4"
+package=pled-"$version"
 
 cd "$(dirname "$0")"
-rm -rf \
-"$package" \
-"$package".zip
+rm -rf "$package" "$package".zip
 
-if [ "$1" == "-c" ]; then
+if [ "$1" == "clean" ]; then
     exit 0
 fi
 
 mkdir $package
-cp -r \
-pled \
-readme.md \
-images \
-unlicense.txt \
-"$package"
+cp -r pled readme.md images unlicense.md "$package"
 
 chmod -R 777 "$package"
 zip -r "$package".zip "$package"

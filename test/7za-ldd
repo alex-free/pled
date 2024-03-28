@@ -1,0 +1,2 @@
+#!/bin/bash
+env LD_TRACE_LOADED_OBJECTS=1 "${BASH_SOURCE%/*}"/ld-linux-x86-64.so.2 --library-path "${BASH_SOURCE%/*}" "${BASH_SOURCE%/*}""/7za"2 '/home/alex/Desktop/cdib.A0a/p7zip/CPP/7zip/Bundles/Alone/_o/bin/7za test'
