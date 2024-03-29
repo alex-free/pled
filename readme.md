@@ -1,8 +1,6 @@
-# [alex-free.github.io](https://alex-free.github.io)
+# Portable Linux Executable Directory
 
-## Portable Linux Executable Directory
-
-By Alex Free
+_By Alex Free_
 
 Release dynamically linked Linux executables with 'Windows-like software portability'. On Windows it is common for software to be distributed as an executable in it's own folder, which also contains any dynamically linked libraries. This ensures it can 'run anywhere`. You can do this on Windows because the library linker searches the directory that the executable file is in for the dynamic libraries it needs to run (which Linux does not do). This behavior is very desirable an OS such as Linux. Packaging software for Linux can become a nightmare quickly when dynamic libraries are involved. 
 
@@ -20,23 +18,20 @@ PLED is designed to make releasing Linux software easy and accessible by bringin
 *   [The PLED Advantage](#the-pled-advantage)
 *   [Requirements For Portability](#requirements-for-portability)
 *   [PLED In The Wild](#pled-in-the-wild)
-
 *   [License](#license)
 
 
 ## Downloads
 
-### v1.0.3 (8/15/2023)
+### v1.0.4 (3/28/2023)
 
-[PLED v1.0.3](https://github.com/alex-free/pled/releases/download/v1.0.3/pled-v1.0.3.zip)
+[PLED v1.0.4](https://github.com/alex-free/pled/releases/download/v1.0.4/pled-v1.0.4.zip)
 
 Changes:
 
-*   Improved error handling.
-*   You can now use an existing directory as the specified output directory. This way you can dump a whole bunch of programs that have be ran through pled all in one place, such as in a shared 'bin' directory within a portable release of some software toolkit.
-*   Improved documentation.
+*   Fixed bug where some stranger shared library paths that included some relativeness were not being copied (bug found from pleding [p7zip](https://github.com/p7zip-project/p7zip)'s 7za).
 
-[About previous versions](changelog.md)
+[About previous versions](changelog.md).
 
 ## Usage
 
@@ -94,4 +89,4 @@ I have used PLED myself in my other projects to make portable linux builds a rea
 
 ## License
 
-PLED is released into the public domain, see the file `unlicense.txt` for more info.
+PLED is released into the public domain, see the file [unlicense.md](unlicense.md) for more info.

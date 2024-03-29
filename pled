@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo -e "Portable Linux Executable Directory (PLED) v1.0.3\nBy Alex Free\n"
+echo -e "Portable Linux Executable Directory (PLED) v1.0.4\nBy Alex Free\n"
 
 if [ "$#" != 2 ]; then
-	echo -e "Usage:\npled <command or executable file> <output directory>"
+	echo -e "Usage:\npled <command in PATH or executable file> <output directory>"
 	exit 1
 fi
 
@@ -36,21 +36,22 @@ if [ -f "$executable_full_path" ]; then
 
 	set -e 
 
-	cp -u "$executable_full_path" "$2"/"$executable"2
+	cp -v "$executable_full_path" "$2"/"$executable"2
 	cd "$2"
-
-	all_linked_libs=$(ldd ./"$executable"2 | grep -Po '/.*(?= \(0x)')
-	loader=$(echo "$all_linked_libs" | grep ld-linux*)
+	all_linked_libs=$(ldd "$executable_full_path" | grep '=>' | awk '{print $3}')
+	# ldd "$executable_full_path"
+	# echo "${all_linked_libs}"
+	loader=$(ldd "$executable_full_path" | grep ld-linux* | awk '{print $1}')
 	loader_name=$(basename "$loader")
  	echo "Got LD loader: "$loader_name""
+	cp -v "$loader" .
 	
 	while IFS= read -r line; do
-	   cp -u -L "$line" .
+	   cp -L -v "$line" .
 	done <<< "${all_linked_libs}"
 
 	total_copied=$(echo "${all_linked_libs}" | wc -l)
-	libs_count=$(expr $total_copied - 1)
-	echo "Copied "$libs_count" shared libraries"
+	echo "Copied "$total_copied" shared libraries"
 	echo -e "#!/bin/bash\n"'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$executable"\"2 "'"$@"'"" > "$executable" 
 	echo -e "#!/bin/bash\nenv LD_TRACE_LOADED_OBJECTS=1 "'"${BASH_SOURCE%/*}"'"/"$loader_name" --library-path "'"${BASH_SOURCE%/*}"'" "'"${BASH_SOURCE%/*}"'"\"/"$executable"\"2 '"$@"'" > "$executable"-ldd 
 	chmod -R 777 *
