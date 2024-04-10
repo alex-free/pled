@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "Portable Linux Executable Directory (PLED) v1.0.4\nBy Alex Free\n"
+echo -e "Portable Linux Executable Directory (PLED) v1.0.5\nBy Alex Free\n"
 
 if [ "$#" != 2 ]; then
 	echo -e "Usage:\npled <command in PATH or executable file> <output directory>"
@@ -35,7 +35,7 @@ if [ -f "$executable_full_path" ]; then
 	fi
 
 	set -e 
-
+	executable_full_path=$(realpath "$executable_full_path")
 	cp -v "$executable_full_path" "$2"/"$executable"2
 	cd "$2"
 	all_linked_libs=$(ldd "$executable_full_path" | grep '=>' | awk '{print $3}')

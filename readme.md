@@ -23,13 +23,13 @@ PLED is designed to make releasing Linux software easy and accessible by bringin
 
 ## Downloads
 
-### v1.0.4 (3/28/2023)
+### v1.0.5 (4/10/2024)
 
-[PLED v1.0.4](https://github.com/alex-free/pled/releases/download/v1.0.4/pled-v1.0.4.zip)
+[PLED v1.0.5](https://github.com/alex-free/pled/releases/download/v1.0.5/pled-v1.0.5.zip)
 
 Changes:
 
-*   Fixed bug where some stranger shared library paths that included some relativeness were not being copied (bug found from pleding [p7zip](https://github.com/p7zip-project/p7zip)'s 7za).
+*   Fixed bug that caused some relative paths to not work.
 
 [About previous versions](changelog.md).
 

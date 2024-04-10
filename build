@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-version="v1.0.4"
+version="v1.0.5"
 package=pled-"$version"
 
 cd "$(dirname "$0")"
@@ -15,4 +15,4 @@ mkdir $package
 cp -r pled readme.md images unlicense.md "$package"
 
 chmod -R 777 "$package"
-zip -r "$package".zip "$package"
+zip -rq "$package".zip "$package"

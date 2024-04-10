@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.4 (3/28/2024)
+
+[PLED v1.0.4](https://github.com/alex-free/pled/releases/download/v1.0.4/pled-v1.0.4.zip)
+
+Changes:
+
+*   Fixed bug where some stranger shared library paths that included some relativeness were not being copied (bug found from pleding [p7zip](https://github.com/p7zip-project/p7zip)'s 7za).
+
 ## v1.0.3 (8/15/2023)
 
 [PLED v1.0.3](https://github.com/alex-free/pled/releases/download/v1.0.3/pled-v1.0.3.zip)
